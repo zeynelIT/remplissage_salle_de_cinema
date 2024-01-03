@@ -6,12 +6,14 @@ import java.util.Scanner;
 public class Salle {
     List<GroupeDeRangees> groupes;
     int P, K, Q; 
+    List<Integer> reservations;
 
     public Salle(){
         groupes = new ArrayList<GroupeDeRangees>();
         P = 0;
         K = 0;
         Q = 0;
+        reservations = new ArrayList<Integer>();
     }
 
     public Salle(List<GroupeDeRangees> groupes){
@@ -19,6 +21,7 @@ public class Salle {
         P = 0;
         K = 0;
         Q = 0;
+        reservations = new ArrayList<Integer>();     
     }
 
     public Salle(List<GroupeDeRangees> groupes, int P, int K, int Q){
@@ -26,8 +29,17 @@ public class Salle {
         this.P = P;
         this.K = K;
         this.Q = Q;
+        reservations = new ArrayList<Integer>();
     }
 
+
+    public Salle(List<GroupeDeRangees> groupes, int P, int K, int Q, List<Integer> reservations){
+        this.groupes = new ArrayList<GroupeDeRangees>(groupes);
+        this.P = P;
+        this.K = K;
+        this.Q = Q;
+        this.reservations = new ArrayList<Integer>(reservations);
+    }
 
     public void addGroupe(GroupeDeRangees groupe){
         groupes.add(new GroupeDeRangees(groupe.rangees));
@@ -38,8 +50,6 @@ public class Salle {
             File fichier = new File(fileName);
             Scanner sc = new Scanner(fichier);
             
-            Salle salle = new Salle();
-
             int nbGroupe = sc.nextInt();
 
             List<Integer> nbRangeGroup = new ArrayList<Integer>();
@@ -77,6 +87,20 @@ public class Salle {
         }
     }
 
+    public void readReservationData(String fileName){
+        try {
+            File fichier = new File(fileName);
+            Scanner sc = new Scanner(fichier);
+            int nbRes = sc.nextInt();
+            for (int i = 0; i < nbRes; i++) {
+                reservations.add(sc.nextInt());
+            }
+            sc.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public String ToString(){
         String res = "";
         for (int i = 0; i < groupes.size(); i++) {
@@ -89,7 +113,13 @@ public class Salle {
         }
         res = res + "P : " + P + "\n";
         res = res + "K : " + K + "\n";
-        res = res + "Q : " + Q + "\n";
+        res = res + "Q : " + Q + "\n\n";
+
+        res = res + "Reservation : \n";
+        for (Integer reservation : reservations) {
+            res = res + reservation + " ";
+        }
+        res = res + "\n";
         return res;
     }
 }
