@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Salle {
+    List<Rangees> [] rangees; 
     List<GroupeDeRangees> groupes;
     int P, K, Q; 
     List<Integer> reservations;
+    int nb_place_tot;
 
     public Salle(){
         groupes = new ArrayList<GroupeDeRangees>();
@@ -41,12 +43,22 @@ public class Salle {
         this.reservations = new ArrayList<Integer>(reservations);
     }
 
+    public Salle(Salle salle){
+        this.groupes = new ArrayList<GroupeDeRangees>(salle.groupes);
+        this.P = salle.P;
+        this.K = salle.K;
+        this.Q = salle.Q;
+        this.reservations = new ArrayList<Integer>(salle.reservations);
+    }
+
     public void addGroupe(GroupeDeRangees groupe){
         groupes.add(new GroupeDeRangees(groupe.rangees));
     }
 
     public void readSalleData(String fileName) {
         try {
+            int maxRange = 0;
+            nb_place_tot = 0;
             File fichier = new File(fileName);
             Scanner sc = new Scanner(fichier);
             
@@ -62,12 +74,29 @@ public class Salle {
                 GroupeDeRangees gr = new GroupeDeRangees();
                 for (int i = 0; i < x; i++) {
                     int capacitee = sc.nextInt();
+                    nb_place_tot += capacitee;
                     int distanceDeLaScene = sc.nextInt();
+                    if (distanceDeLaScene > maxRange)
+                        maxRange = distanceDeLaScene;
                     Rangees r = new Rangees(capacitee, distanceDeLaScene);
                     gr.addRangees(r);
                 }
                 this.addGroupe(gr);
             }
+
+            /*on initialise les rangees */
+            rangees = new List[maxRange+1];
+            for (int i = 0; i <= maxRange; i++) {
+                rangees[i] = new ArrayList<Rangees>();
+            }
+
+            /*on rempli les rangees*/
+            for (GroupeDeRangees gr : this.groupes) {
+                for (Rangees r : gr.rangees) {
+                    rangees[r.distanceDeLaScene].add(r);
+                }                
+            }
+
             sc.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -99,6 +128,11 @@ public class Salle {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public String fillSalle(){
+        String res = "";
+        return res;
     }
 
     public String ToString(){
