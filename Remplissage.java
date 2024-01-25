@@ -21,7 +21,7 @@ public class Remplissage {
         while(i < salle.reservations.size() && (j < salle.groupes.size() || k <= salle.rangees.length)){
             if(j == salle.rangees[k].size()){
                 j = 0;
-                k = k + salle.P;
+                k = k + salle.P + 1;
                 nbRangeeUtilise++;
             }
             else if (salle.reservations.get(i) + decal*salle.Q <= salle.rangees[k].get(j).capacitee) {
