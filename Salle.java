@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Salle {
-    List<Rangees> [] rangees; 
+    @SuppressWarnings("unchecked")
+    ArrayList<List<Rangees>> rangees; 
     List<GroupeDeRangees> groupes;
     int P, K, Q; 
     List<Integer> reservations;
@@ -49,12 +50,37 @@ public class Salle {
         this.K = salle.K;
         this.Q = salle.Q;
         this.reservations = new ArrayList<Integer>(salle.reservations);
+        
+
+        // rangees = new ArrayList<List<Rangees>>();
+        // // rangees = new ArrayList[salle.rangees.length];
+        // for (int i = 0; i < salle.rangees.size(); i++) {
+        //     rangees.add(new ArrayList<Rangees>());
+        // }
+
+        // for (int i = 0; i < salle.rangees.size(); i++) {
+        //     for (Rangees lr : salle.rangees.get(i)) {
+        //         rangees.get(i).add(new Rangees(lr));
+        //     }
+        // }
+        rangees = new ArrayList<List<Rangees>>();
+        for (int i = 0; i < salle.rangees.size(); i++) {
+            rangees.add(new ArrayList<Rangees>());
+        }
+
+            /*on rempli les rangees*/
+            for (GroupeDeRangees gr : this.groupes) {
+                for (Rangees r : gr.rangees) {
+                    rangees.get(r.distanceDeLaScene).add(r);
+                }                
+            }
     }
 
     public void addGroupe(GroupeDeRangees groupe){
         groupes.add(new GroupeDeRangees(groupe.rangees));
     }
 
+    // @SuppressWarnings("unchecked")
     public void readSalleData(String fileName) {
         try {
             int maxRange = 0;
@@ -85,15 +111,15 @@ public class Salle {
             }
 
             /*on initialise les rangees */
-            rangees = new List[maxRange+1];
+            rangees = new ArrayList<List<Rangees>>();
             for (int i = 0; i <= maxRange; i++) {
-                rangees[i] = new ArrayList<Rangees>();
+                rangees.add(new ArrayList<Rangees>());
             }
 
             /*on rempli les rangees*/
             for (GroupeDeRangees gr : this.groupes) {
                 for (Rangees r : gr.rangees) {
-                    rangees[r.distanceDeLaScene].add(r);
+                    rangees.get(r.distanceDeLaScene).add(r);
                 }                
             }
 

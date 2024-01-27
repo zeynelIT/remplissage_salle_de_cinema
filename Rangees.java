@@ -11,4 +11,9 @@ public class Rangees {
         this.capacitee = capacitee;
         this.distanceDeLaScene = distanceDeLaScene;
     }
+
+    public Rangees(Rangees r){
+        capacitee = r.capacitee;
+        distanceDeLaScene = r.distanceDeLaScene;
+    }
 }
