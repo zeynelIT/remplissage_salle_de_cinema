@@ -11,4 +11,11 @@ public class RemplissageGroupeRangee {
         this.numGroupeSpectateur = new ArrayList<Integer>(numGroupeSpectateur);
         this.numRangee = numRangee;
     }
+
+    public RemplissageGroupeRangee(RemplissageGroupeRangee rg){
+        this.nbPlaceUtilisee = rg.nbPlaceUtilisee;
+        this.numGroupe = rg.numGroupe;
+        this.numGroupeSpectateur = new ArrayList<Integer>(rg.numGroupeSpectateur);
+        this.numRangee = rg.numRangee;
+    }
 }

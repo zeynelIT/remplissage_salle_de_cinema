@@ -8,7 +8,7 @@ public class Salle {
     ArrayList<List<Rangees>> rangees; 
     List<GroupeDeRangees> groupes;
     int P, K, Q; 
-    List<Integer> reservations;
+    List<Reservation> reservations;
     int nb_place_tot;
 
     public Salle(){
@@ -16,7 +16,7 @@ public class Salle {
         P = 0;
         K = 0;
         Q = 0;
-        reservations = new ArrayList<Integer>();
+        reservations = new ArrayList<Reservation>();
     }
 
     public Salle(List<GroupeDeRangees> groupes){
@@ -24,7 +24,7 @@ public class Salle {
         P = 0;
         K = 0;
         Q = 0;
-        reservations = new ArrayList<Integer>();     
+        reservations = new ArrayList<Reservation>();     
     }
 
     public Salle(List<GroupeDeRangees> groupes, int P, int K, int Q){
@@ -32,55 +32,53 @@ public class Salle {
         this.P = P;
         this.K = K;
         this.Q = Q;
-        reservations = new ArrayList<Integer>();
+        reservations = new ArrayList<Reservation>();
     }
 
 
-    public Salle(List<GroupeDeRangees> groupes, int P, int K, int Q, List<Integer> reservations){
+    public Salle(List<GroupeDeRangees> groupes, int P, int K, int Q, List<Reservation> reservations){
         this.groupes = new ArrayList<GroupeDeRangees>(groupes);
         this.P = P;
         this.K = K;
         this.Q = Q;
-        this.reservations = new ArrayList<Integer>(reservations);
+        this.reservations = new ArrayList<Reservation>();
+        for (Reservation reservation : reservations) {
+            this.reservations.add(new Reservation(reservation));
+        }
     }
 
     public Salle(Salle salle){
-        this.groupes = new ArrayList<GroupeDeRangees>(salle.groupes);
+        this.groupes = new ArrayList<GroupeDeRangees>();
+        for (GroupeDeRangees gr : salle.groupes) {
+            groupes.add(new GroupeDeRangees(gr));
+        }
         this.P = salle.P;
         this.K = salle.K;
         this.Q = salle.Q;
-        this.reservations = new ArrayList<Integer>(salle.reservations);
+        this.reservations = new ArrayList<Reservation>();
+        this.nb_place_tot = salle.nb_place_tot;
         
+        for (Reservation reservation : salle.reservations) {
+            this.reservations.add(new Reservation(reservation));
+        }
 
-        // rangees = new ArrayList<List<Rangees>>();
-        // // rangees = new ArrayList[salle.rangees.length];
-        // for (int i = 0; i < salle.rangees.size(); i++) {
-        //     rangees.add(new ArrayList<Rangees>());
-        // }
-
-        // for (int i = 0; i < salle.rangees.size(); i++) {
-        //     for (Rangees lr : salle.rangees.get(i)) {
-        //         rangees.get(i).add(new Rangees(lr));
-        //     }
-        // }
         rangees = new ArrayList<List<Rangees>>();
         for (int i = 0; i < salle.rangees.size(); i++) {
             rangees.add(new ArrayList<Rangees>());
         }
 
-            /*on rempli les rangees*/
-            for (GroupeDeRangees gr : this.groupes) {
-                for (Rangees r : gr.rangees) {
-                    rangees.get(r.distanceDeLaScene).add(r);
-                }                
-            }
+        /*on rempli les rangees*/
+        for (GroupeDeRangees gr : this.groupes) {
+            for (Rangees r : gr.rangees) {
+                rangees.get(r.distanceDeLaScene).add(r);
+            }                
+        }
     }
 
     public void addGroupe(GroupeDeRangees groupe){
-        groupes.add(new GroupeDeRangees(groupe.rangees));
+        groupes.add(new GroupeDeRangees(groupe));
     }
 
-    // @SuppressWarnings("unchecked")
     public void readSalleData(String fileName) {
         try {
             int maxRange = 0;
@@ -148,17 +146,12 @@ public class Salle {
             Scanner sc = new Scanner(fichier);
             int nbRes = sc.nextInt();
             for (int i = 0; i < nbRes; i++) {
-                reservations.add(sc.nextInt());
+                reservations.add(new Reservation(sc.nextInt(), i+1));
             }
             sc.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public String fillSalle(){
-        String res = "";
-        return res;
     }
 
     public String ToString(){
@@ -176,8 +169,8 @@ public class Salle {
         res = res + "Q : " + Q + "\n\n";
 
         res = res + "Reservation : \n";
-        for (Integer reservation : reservations) {
-            res = res + reservation + " ";
+        for (Reservation reservation : reservations) {
+            res = res + reservation.nombreSpectateur + " ";
         }
         res = res + "\n";
         return res;

@@ -8,9 +8,14 @@ public class GroupeDeRangees {
             rangees = new ArrayList<Rangees>();
         }
 
-        public GroupeDeRangees(List<Rangees> rangees){
-            this.rangees = new ArrayList<Rangees>(rangees);
+        public GroupeDeRangees(GroupeDeRangees gr){
+            this.rangees = new ArrayList<Rangees>();
+            for (Rangees rangees2 : gr.rangees) {
+                this.rangees.add(new Rangees(rangees2));
+            }
         }
+
+        
 
         public void addRangees(Rangees rangee){
             this.rangees.add(new Rangees(rangee.capacitee,rangee.distanceDeLaScene));
