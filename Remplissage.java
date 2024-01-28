@@ -14,20 +14,32 @@ public class Remplissage {
         this.data = new ArrayList<RemplissageGroupeRangee>();
         this.salle = new Salle(salle);
         sommeDist = 0;
-        nbRangeeUtilise = 1;
+        nbRangeeUtilise = 0;
         nb_util_tot = 0;
 
         // this.algoNaive(1);
-        this.AlgoEnum();
+        this.AlgoEnum(1);
         
         tauxRemplissage = (float)nb_util_tot/(float)salle.nb_place_tot;
+    }
+    
+    public Remplissage(Remplissage r){
+        this.data = new ArrayList<RemplissageGroupeRangee>();
+        for (RemplissageGroupeRangee rgr : r.data) {
+            this.data.add(new RemplissageGroupeRangee(rgr));
+        }
+        this.salle = new Salle(r.salle);
+        sommeDist = r.sommeDist;
+        nbRangeeUtilise = r.nbRangeeUtilise;
+        nb_util_tot = r.nb_util_tot;
+        tauxRemplissage = r.tauxRemplissage;
     }
     
     public Remplissage(Salle salle, int demarrage){
         this.data = new ArrayList<RemplissageGroupeRangee>();
         this.salle = new Salle(salle);
         sommeDist = 0;
-        nbRangeeUtilise = 1;
+        nbRangeeUtilise = 0;
         nb_util_tot = 0;
         
         this.algoNaive(demarrage);
@@ -50,16 +62,20 @@ public class Remplissage {
         return (reservation + decal*salle.Q <= capacitee);
     }
 
-    public void AlgoEnum(){
+    public void AlgoEnum(int k){
         // on minimise le nombre de range ou les distance de la scene
         // int min = 5000;
         // ou on maximise le taux de remplissage
         float max = 0.0f ;
         Remplissage rtemp = null;
         //on essaye de commencer par des rangee differente et regarder le quelle est optimal;
-        for (int i = 1; i <= salle.P+1; i++) {
-            Remplissage r = new Remplissage(salle, i);
-
+        for (int i = k; i <= salle.P+k; i++) {
+            if(i >= salle.rangees.size())
+                break;
+            Remplissage r = new Remplissage(this);
+            r.RempliRangee(i);
+            //on passe a la prochaine remplissable
+            r.AlgoEnum(i+ salle.P +1);
             if (r.tauxRemplissage > max) {
                 rtemp = r;
                 max = r.tauxRemplissage;
@@ -67,6 +83,7 @@ public class Remplissage {
         }
 
         // on prend la meilleur solution 
+        if(rtemp == null) return;
         this.salle = new Salle(rtemp.salle);
         this.nbRangeeUtilise = rtemp.nbRangeeUtilise;
         this.nb_util_tot = rtemp.nb_util_tot;
@@ -103,6 +120,8 @@ public class Remplissage {
             nbutil = 0;
             decal = 0;
         }
+
+        tauxRemplissage = (float)nb_util_tot / (float)salle.nb_place_tot;
     }
 
     public String ToString(){
