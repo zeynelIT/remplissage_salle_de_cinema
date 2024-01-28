@@ -37,45 +37,12 @@ public class Remplissage {
 
     //ici le parametre demarrage est la rangee a la quelle on commance a remplire;
     public void algoNaive(int demarrage){
-        int j = 0, k = demarrage;
-        int decal = 0;
-        List<Integer> gs = new ArrayList<Integer>();
-        int nbutil = 0;
+        int k = demarrage;
         // tant quil reste des reservation et des rangee de libre
         while(!salle.reservations.isEmpty() &&  k < salle.rangees.size()){
-            //si on est arrivee a la fin d une rangee on repart au debut de la prochaine
-            if(j == salle.rangees.get(k).size()){
-                j = 0;
-                k = k + salle.P + 1;
-                nbRangeeUtilise++;
-            }
-            // si il y a de la place pour un groupe on le met
-            else if (RestePlace(salle.reservations.get(0).nombreSpectateur, decal, salle.rangees.get(k).get(j).capacitee)) {
-                salle.rangees.get(k).get(j).capacitee -= salle.reservations.get(0).nombreSpectateur + decal*salle.Q;
-                nbutil += salle.reservations.get(0).nombreSpectateur;
-                gs.add(salle.reservations.get(0).numGroupeSpectateur);
-                salle.reservations.remove(0);
-                decal = 1;
-                
-                if(salle.reservations.isEmpty()){
-                    j++;
-                    data.add(new RemplissageGroupeRangee(j, k, nbutil, gs));
-                    gs.clear();
-                    nb_util_tot += nbutil;
-                    nbutil = 0;
-                }
-            }
-            //sinon on ajoute la data et on passe au prochain groupe de la rangee actuelle
-            else{
-                sommeDist += salle.rangees.get(k).get(j).distanceDeLaScene; // on peut mettre juste k
-                j++;
-                decal = 0;
-
-                data.add(new RemplissageGroupeRangee(j, k, nbutil, gs));
-                gs.clear();
-                nb_util_tot += nbutil;
-                nbutil = 0;
-            }
+            RempliRangee(k);
+            nbRangeeUtilise++;
+            k += salle.P + 1;
         }
     }
 
@@ -110,6 +77,32 @@ public class Remplissage {
             this.data.add(remplissageGroupeRangee);
         }
 
+    }
+
+    private void RempliRangee(int i){
+        int decal = 0;
+        int nbutil = 0;
+        List<Integer> gs = new ArrayList<Integer>();
+        for (Rangees r : salle.rangees.get(i)) {
+            if(salle.reservations.isEmpty())
+                break;
+            while(RestePlace(salle.reservations.get(0).nombreSpectateur, decal, r.capacitee)){
+                r.capacitee -= salle.reservations.get(0).nombreSpectateur + decal*salle.Q;
+                nbutil += salle.reservations.get(0).nombreSpectateur;
+                gs.add(salle.reservations.get(0).numGroupeSpectateur);
+                salle.reservations.remove(0);
+                decal = 1;
+                if(salle.reservations.isEmpty())
+                    break;
+            }
+            decal = 0;
+            sommeDist += i;
+            data.add(new RemplissageGroupeRangee(r.groupe, i, nbutil, gs));
+            gs.clear();
+            nb_util_tot += nbutil;
+            nbutil = 0;
+            decal = 0;
+        }
     }
 
     public String ToString(){

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Salle {
-    @SuppressWarnings("unchecked")
+    
     ArrayList<List<Rangees>> rangees; 
     List<GroupeDeRangees> groupes;
     int P, K, Q; 
@@ -102,7 +102,7 @@ public class Salle {
                     int distanceDeLaScene = sc.nextInt();
                     if (distanceDeLaScene > maxRange)
                         maxRange = distanceDeLaScene;
-                    Rangees r = new Rangees(capacitee, distanceDeLaScene);
+                    Rangees r = new Rangees(capacitee, distanceDeLaScene, i+1);
                     gr.addRangees(r);
                 }
                 this.addGroupe(gr);

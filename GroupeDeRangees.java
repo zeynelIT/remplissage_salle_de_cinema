@@ -18,6 +18,6 @@ public class GroupeDeRangees {
         
 
         public void addRangees(Rangees rangee){
-            this.rangees.add(new Rangees(rangee.capacitee,rangee.distanceDeLaScene));
+            this.rangees.add(new Rangees(rangee.capacitee,rangee.distanceDeLaScene, rangee.groupe));
         }
 }
