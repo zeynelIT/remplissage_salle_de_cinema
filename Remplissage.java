@@ -17,8 +17,10 @@ public class Remplissage {
         nbRangeeUtilise = 0;
         nb_util_tot = 0;
 
+
+        this.AlgorithmeEnumeration();
         // this.algoNaive(1);
-        this.AlgoEnum(1);
+        // this.AlgoEnum(1);
         
         tauxRemplissage = (float)nb_util_tot/(float)salle.nb_place_tot;
     }
@@ -62,11 +64,43 @@ public class Remplissage {
         return (reservation + decal*salle.Q <= capacitee);
     }
 
+    public void AlgorithmeEnumeration(){
+        ArrayList<ArrayList<Reservation>> permutation = new ArrayList<ArrayList<Reservation>>();
+        generatePermutationsHelper(salle.reservations, 1, permutation);
+
+        // on minimise le nombre de range ou les distance de la scene
+        int min = 50000;
+        // ou on maximise le taux de remplissage
+        // float max = 0.0f ;
+        Remplissage rtemp = null;
+        for (ArrayList<Reservation> reserv : permutation) {
+            Remplissage r = new Remplissage(this);
+            r.salle.reservations = reserv;
+            r.AlgoEnum(1);
+
+            if (min > r.sommeDist) {
+                rtemp = r;
+                min = r.sommeDist;
+            }
+        }
+
+        if(rtemp == null) return;
+        this.salle = new Salle(rtemp.salle);
+        this.nbRangeeUtilise = rtemp.nbRangeeUtilise;
+        this.nb_util_tot = rtemp.nb_util_tot;
+        this.sommeDist = rtemp.sommeDist;
+        this.tauxRemplissage = rtemp.tauxRemplissage;
+        this.data.clear();
+        for (RemplissageGroupeRangee remplissageGroupeRangee : rtemp.data) {
+            this.data.add(remplissageGroupeRangee);
+        }
+    }
+
     public void AlgoEnum(int k){
         // on minimise le nombre de range ou les distance de la scene
-        // int min = 5000;
+        int min = 50000;
         // ou on maximise le taux de remplissage
-        float max = 0.0f ;
+        // float max = 0.0f ;
         Remplissage rtemp = null;
         //on essaye de commencer par des rangee differente et regarder le quelle est optimal;
         for (int i = k; i <= salle.P+k; i++) {
@@ -76,9 +110,9 @@ public class Remplissage {
             r.RempliRangee(i);
             //on passe a la prochaine remplissable
             r.AlgoEnum(i+ salle.P +1);
-            if (r.tauxRemplissage > max) {
+            if (min > r.sommeDist) {
                 rtemp = r;
-                max = r.tauxRemplissage;
+                min = r.sommeDist;
             }
         }
 
@@ -122,6 +156,34 @@ public class Remplissage {
         }
 
         tauxRemplissage = (float)nb_util_tot / (float)salle.nb_place_tot;
+    }
+
+    //on genere les permutation des reservation
+    public void generatePermutationsHelper(List<Reservation> reservations, int index, ArrayList<ArrayList<Reservation>> permutations) {
+        if (index == reservations.size() - 1) {
+            permutations.add(new ArrayList<>(reservations));
+        } else {
+            for (int i = index; i < reservations.size(); i++) {
+                //boucle pour pas avoir de doublons
+                while(reservations.get(index).nombreSpectateur == reservations.get(i).nombreSpectateur){
+                    i++;
+                    if(i == reservations.size())
+                    return;
+                }
+                // Échanger les réservations
+                Reservation temp = reservations.get(index);
+                reservations.set(index, reservations.get(i));
+                reservations.set(i, temp);
+
+                // Appeler la fonction récursivement pour la prochaine position
+                generatePermutationsHelper(reservations, index + 1, permutations);
+
+                // Revertir l'échange pour explorer d'autres permutations
+                temp = reservations.get(index);
+                reservations.set(index, reservations.get(i));
+                reservations.set(i, temp);
+            }
+        }
     }
 
     public String ToString(){
