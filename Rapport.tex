@@ -1,0 +1,74 @@
+\documentclass{article}
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+% Set page size and margins
+% Replace `letterpaper' with`a4paper' for UK/EU standard size
+\usepackage[a4paper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{Projet de remplissage de salle}
+\author{Zeynel ALTUN, Alae BENMOUSSA, Yosra BEN TAARIT, Amélie LAY}
+\date{Janvier 2024}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+[insérer abstract ici]
+\end{abstract}
+
+\section{Introduction}
+La gestion des spectacles et des événements en temps normal s'appuie généralement sur des contraintes physiques de la salle pour optimiser le remplissage des rangées. Cependant, avec l'avènement de la pandémie, de nouvelles contraintes ont émergé, nécessitant une adaptation des pratiques. En réponse à ces défis, l'entreprise s'est engagée à élaborer un protocole de remplissage garantissant une distanciation sociale adéquate, visant à réduire les risques de transmission.
+
+Le protocole de base énonce trois principales contraintes: 
+\begin{enumerate}
+    \item Deux rangées consécutives de spectateurs doivent être séparées par au moins une rangée vide (P=1 en pratique).
+    \item Un groupe de spectateurs (famille/amis), indissociable, doit être placé sur une seule rangée, avec une capacité maximale de spectateurs par groupe fixée à \(K=6\) en pratique.
+    \item Deux groupes de spectateurs sur une même rangée doivent être séparés par au moins \(Q=2\) places.
+\end{enumerate}
+
+Face à ces impératifs, le patron de l'entreprise sollicite l'expertise des jeunes ingénieurs maîtrisant les nouvelles technologies pour développer des stratégies de remplissage conciliant les exigences sanitaires et la satisfaction des spectateurs.
+
+Pour simplifier le modèle, la salle de spectacle est envisagée comme constituée de \(G\) groupes de rangées, chacun comportant un seul type de places. Ces groupes sont distincts des secteurs de la salle. Chaque groupe est défini par un nombre de rangées (\(R_g\)), une capacité de places par rangée (\(C_{g,r}\)), et une distance par rapport à la scène (\(D_{g,r}\)). Par exemple, un groupe peut être composé de plusieurs secteurs, comme illustré dans la Figure 1.
+
+Le processus de réservation est également intégré dans le modèle, avec des réservations reçues jusqu'à 24 heures avant chaque spectacle. Chaque réservation, notée `B', correspond à un groupe de spectateurs indissociables (\(S_b\)) avec une limite inférieure fixée par la plus petite capacité de rangée dans le groupe et la rangée considérée (\(S_b \leq \min[g,r](C_{g,r})\)). Cette contrainte garantit qu'un groupe de spectateurs peut toujours être placé dans une rangée de la salle.
+
+\section{Modélisation des données}
+2.1. Identification des Classes d'Objets:
+
+    Liste des classes d'objets nécessaires à la modélisation du plan de découpe.
+    Justification de chaque classe en fonction des données à manipuler.
+
+2.2. Attributs des Classes:
+
+    Pour chaque classe, liste détaillée des attributs nécessaires.
+    Justification de chaque attribut en lien avec les informations à représenter.
+
+2.3. Diagramme de Classes UML:\@
+
+    Création d'un diagramme de classes UML illustrant les relations entre les classes.
+    Annotations pour expliquer les relations, les multiplicités, etc.
+    Justification de l'utilisation éventuelle de structures de données spécifiques.
+
+\section{Modélisation des traitements}
+3.1. Méthodes des Classes:
+
+    Pour chaque classe, liste des méthodes associées aux opérations liées au plan de découpe.
+    Spécification des entrées et sorties de chaque méthode.
+
+3.2. Description des Méthodes:
+
+    Description détaillée des grandes étapes de chaque méthode.
+    Utilisation de schémas pour clarifier les étapes, si nécessaire.
+
+3.3. Exemples de Schémas:
+
+    Inclusion de schémas pour illustrer visuellement le processus de traitement.
+\end{document}
