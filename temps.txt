@@ -1,0 +1,2 @@
+Algorithme Enumeration Total :
+	salle 2 reservation 3 (3:30 min)

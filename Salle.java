@@ -93,7 +93,7 @@ public class Salle {
             for (int i = 0; i < nbGroupe; i++) {
                 nbRangeGroup.add(sc.nextInt());
             }
-            
+            int g = 1;
             for (Integer x : nbRangeGroup) {
                 GroupeDeRangees gr = new GroupeDeRangees();
                 for (int i = 0; i < x; i++) {
@@ -102,10 +102,11 @@ public class Salle {
                     int distanceDeLaScene = sc.nextInt();
                     if (distanceDeLaScene > maxRange)
                         maxRange = distanceDeLaScene;
-                    Rangees r = new Rangees(capacitee, distanceDeLaScene, i+1);
+                    Rangees r = new Rangees(capacitee, distanceDeLaScene, g);
                     gr.addRangees(r);
                 }
                 this.addGroupe(gr);
+                g++;
             }
 
             /*on initialise les rangees */
