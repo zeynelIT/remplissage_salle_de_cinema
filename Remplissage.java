@@ -160,7 +160,7 @@ public class Remplissage {
                     break;
             }
 
-            /******permut******* */
+            /******on remet dans la meme config que au debut******* */
             temp = salle.reservations.get(j);
             salle.reservations.set(j, salle.reservations.get(0));
             salle.reservations.set(0, temp);
