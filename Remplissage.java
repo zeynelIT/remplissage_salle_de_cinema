@@ -20,8 +20,8 @@ public class Remplissage {
         nb_util_tot = 0;
 
 
-        this.AlgorithmeEnumeration();
-        // AlgoEnumPartielle();
+        AlgoEnumPartielle(1);
+        // this.AlgorithmeEnumeration();
         // this.algoNaive();
         
         tauxRemplissage = (float)nb_util_tot/(float)salle.nb_place_tot;
@@ -65,7 +65,7 @@ public class Remplissage {
         for (ArrayList<Reservation> reserv : permutation) {
             Remplissage r = new Remplissage(this);
             r.salle.reservations = reserv;
-            r.AlgoEnum(1);
+            r.AlgorithmeEnumerationRec(1);;
 
             if (min > r.sommeDist) {
                 rtemp = r;
@@ -85,7 +85,7 @@ public class Remplissage {
         }
     }
 
-    public void AlgoEnum(int k){
+    public void AlgorithmeEnumerationRec(int k){
         // on minimise le nombre de range ou les distance de la scene
         int min = 50000;
         // ou on maximise le taux de remplissage
@@ -98,7 +98,7 @@ public class Remplissage {
             Remplissage r = new Remplissage(this);
             r.RempliRangee(i);
             //on passe a la prochaine remplissable
-            r.AlgoEnum(i+ salle.P +1);
+            r.AlgorithmeEnumerationRec(i+ salle.P +1);
             if (min > r.sommeDist) {
                 rtemp = r;
                 min = r.sommeDist;
@@ -119,62 +119,55 @@ public class Remplissage {
 
     }
 
-    public void AlgoEnumPartielle(){
-        ArrayList<ArrayList<Reservation>> permutation = new ArrayList<ArrayList<Reservation>>();
-        generatePermutationsHelper(salle.reservations, 1, permutation);
-
+    public void AlgoEnumPartielle(int k){
         // on minimise le nombre de range ou les distance de la scene
         int min = 50000;
         // ou on maximise le taux de remplissage
         // float max = 0.0f ;
         Remplissage rtemp = null;
-        for (ArrayList<Reservation> reserv : permutation) {
-            Remplissage r = new Remplissage(this);
-            r.salle.reservations = reserv;
-            r.AlgoEnum2(1);
-
-            if (min > r.sommeDist) {
-                rtemp = r;
-                min = r.sommeDist;
+        /********************************************************** */
+        List<Integer> tabDoublons = new ArrayList<Integer>();
+        // tabDoublons.add(salle.reservations.get(0).nombreSpectateur);
+        for (int j = 0; j < salle.reservations.size(); j++) {
+            while (j < salle.reservations.size() && tabDoublons.contains(salle.reservations.get(j).nombreSpectateur)) {
+                j++;
             }
-        }
-
-        if(rtemp == null) return;
-        this.salle = new Salle(rtemp.salle);
-        this.nbRangeeUtilise = rtemp.nbRangeeUtilise;
-        this.nb_util_tot = rtemp.nb_util_tot;
-        this.sommeDist = rtemp.sommeDist;
-        this.tauxRemplissage = rtemp.tauxRemplissage;
-        this.data.clear();
-        for (RemplissageGroupeRangee remplissageGroupeRangee : rtemp.data) {
-            this.data.add(remplissageGroupeRangee);
-        }              
-    }
-
-    public void AlgoEnum2(int k){
-        // on minimise le nombre de range ou les distance de la scene
-        int min = 50000;
-        // ou on maximise le taux de remplissage
-        // float max = 0.0f ;
-        Remplissage rtemp = null;
-        //on essaye de commencer par des rangee differente et regarder le quelle est optimal;
-        for (int i = k; i <= salle.P+k; i++) {
-            if(i >= salle.rangees.size())
+            if(j == salle.reservations.size())
                 break;
-            Remplissage r = new Remplissage(this);
-            r.RempliRangee(i);
-            //on passe a la prochaine remplissable
-            // System.out.println("min : "+min + " brone : " + r.BorneInf(i+r.salle.P+1));
-            if (min > r.BorneInfSommeDist(i+r.salle.P+1)) {
-                r.AlgoEnum2(i+ salle.P +1);
-                if (min > r.sommeDist) {
-                    rtemp = r;
-                    min = r.sommeDist;
+            /******permut******* */
+            Reservation temp;
+            temp = salle.reservations.get(j);
+            salle.reservations.set(j, salle.reservations.get(0));
+            salle.reservations.set(0, temp);
+            /*************** */
+
+            //on essaye de commencer par des rangee differente et regarder le quelle est optimal;
+            for (int i = k; i <= salle.P+k; i++) {
+                if(i >= salle.rangees.size())
+                    break;
+                Remplissage r = new Remplissage(this);
+                r.RempliRangee(i);
+                //on passe a la prochaine remplissable
+                // System.out.println("min : "+min + " brone : " + r.BorneInf(i+r.salle.P+1));
+                if (min > r.BorneInfSommeDist(i+r.salle.P+1)) {
+                    r.AlgoEnumPartielle(i+ salle.P +1);
+                    if (min > r.sommeDist) {
+                        rtemp = r;
+                        min = r.sommeDist;
+                    }
                 }
+                else
+                    break;
             }
-            else
-                break;
+
+            /******permut******* */
+            temp = salle.reservations.get(j);
+            salle.reservations.set(j, salle.reservations.get(0));
+            salle.reservations.set(0, temp);
+            /*************** */
+
         }
+        /********************************************************** */
 
         // on prend la meilleur solution 
         if(rtemp == null) return;
@@ -189,6 +182,7 @@ public class Remplissage {
         }
 
     }
+
 
     /*Algo qui calcule la borne inferieur*/
 
